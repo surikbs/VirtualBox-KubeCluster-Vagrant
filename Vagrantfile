@@ -1,9 +1,14 @@
-IMAGE_NAME = "bento/ubuntu-16.04"
+IMAGE_NAME = "bento/ubuntu-20.10"
 N = 2
 
 Vagrant.configure("2") do |config|
     config.ssh.insert_key = false
-
+    config.vm.provision "shell", inline: <<-SHELL
+        apt-get update -y
+        echo "192.168.50.10  master-node" >> /etc/hosts
+        echo "192.168.50.11  worker-node01" >> /etc/hosts
+        echo "192.168.50.12  worker-node02" >> /etc/hosts
+    SHELL
     config.vm.provider "virtualbox" do |v|
         v.memory = 1024
         v.cpus = 2
@@ -13,7 +18,7 @@ Vagrant.configure("2") do |config|
         master.vm.box = IMAGE_NAME
         master.vm.network "private_network", ip: "192.168.50.10"
         master.vm.hostname = "k8s-master"
-        master.vm.provision "ansible" do |ansible|
+        master.vm.provision "ansible_local" do |ansible|
             ansible.playbook = "kubernetes-setup/master-playbook.yml"
             ansible.extra_vars = {
                 node_ip: "192.168.50.10",
@@ -26,7 +31,7 @@ Vagrant.configure("2") do |config|
             node.vm.box = IMAGE_NAME
             node.vm.network "private_network", ip: "192.168.50.#{i + 10}"
             node.vm.hostname = "node-#{i}"
-            node.vm.provision "ansible" do |ansible|
+            node.vm.provision "ansible_local" do |ansible|
                 ansible.playbook = "kubernetes-setup/node-playbook.yml"
                 ansible.extra_vars = {
                     node_ip: "192.168.50.#{i + 10}",
