@@ -5,9 +5,11 @@ Vagrant.configure("2") do |config|
     config.ssh.insert_key = false
     config.vm.provision "shell", inline: <<-SHELL
         apt-get update -y
+        apt-get -y clean && sudo apt-get -y autoclean 
         apt install software-properties-common -y
         add-apt-repository --yes --update ppa:ansible/ansible -y
         apt install ansible -y
+        apt-get -y clean && sudo apt-get -y autoclean 
         echo "192.168.50.10  k8s-master" >> /etc/hosts
         echo "192.168.50.11  worker-node-1" >> /etc/hosts
         echo "192.168.50.12  worker-node-2" >> /etc/hosts

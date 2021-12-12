@@ -2,12 +2,12 @@
 - hosts: all
   become: true
   tasks:
-  - name: Install packages that allow apt to be used over HTTPS
+  - name: installa dependency
     apt:
-      name: "{{ packages }}"
+      name: "{{item}}"
       state: present
-    vars:
-      packages:
+      update_cache: yes
+    loop:
       - apt-transport-https
       - ca-certificates
       - curl
@@ -19,12 +19,10 @@
       url: https://download.docker.com/linux/ubuntu/gpg
       state: present
 
-  - name: Add apt repository for stable version
+  - name: Add Docker Repository
     apt_repository:
-      repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable
+      repo: deb https://download.docker.com/linux/ubuntu bionic stable
       state: present
-      update_cache: true
-      become_user: root
 
   - name: Install docker and its dependecies
     apt: 
