@@ -6,7 +6,6 @@
     apt:
       name: "{{ packages }}"
       state: present
-      update_cache: yes
     vars:
       packages:
       - apt-transport-https
@@ -24,12 +23,12 @@
     apt_repository:
       repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable
       state: present
+      update_cache: true
 
   - name: Install docker and its dependecies
     apt: 
       name: "{{ packages }}"
       state: present
-      update_cache: yes
     vars:
       packages:
       - docker-ce 
@@ -70,7 +69,6 @@
     apt: 
       name: "{{ packages }}"
       state: present
-      update_cache: yes
     vars:
       packages:
         - kubelet 

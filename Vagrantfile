@@ -5,9 +5,12 @@ Vagrant.configure("2") do |config|
     config.ssh.insert_key = false
     config.vm.provision "shell", inline: <<-SHELL
         apt-get update -y
-        echo "192.168.50.10  master-node" >> /etc/hosts
-        echo "192.168.50.11  worker-node01" >> /etc/hosts
-        echo "192.168.50.12  worker-node02" >> /etc/hosts
+        apt install software-properties-common -y
+        add-apt-repository --yes --update ppa:ansible/ansible -y
+        apt install ansible -y
+        echo "192.168.50.10  k8s-master" >> /etc/hosts
+        echo "192.168.50.11  worker-node-1" >> /etc/hosts
+        echo "192.168.50.12  worker-node-2" >> /etc/hosts
     SHELL
     config.vm.provider "virtualbox" do |v|
         v.memory = 1024
@@ -27,7 +30,7 @@ Vagrant.configure("2") do |config|
     end
 
     (1..N).each do |i|
-        config.vm.define "node-#{i}" do |node|
+        config.vm.define "worker-node-#{i}" do |node|
             node.vm.box = IMAGE_NAME
             node.vm.network "private_network", ip: "192.168.50.#{i + 10}"
             node.vm.hostname = "node-#{i}"
