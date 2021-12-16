@@ -1,8 +1,11 @@
 ---
 - hosts: all
   become: true
-  tasks:
-  - name: installa dependency
+  tasks: 
+  - name: apt clean
+    command: sudo apt-get -y clean && sudo apt-get -y autoclean
+    
+  - name: install a dependency
     apt:
       name: "{{item}}"
       state: present
