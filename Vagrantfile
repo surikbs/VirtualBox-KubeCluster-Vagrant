@@ -32,7 +32,6 @@ Vagrant.configure("2") do |config|
             end            
             master.vm.provision "ansible_local" do |ansible|
                 ansible.playbook = "roles/k8s.yml"
-                #Redefine defaults
                 ansible.extra_vars = {
                     k8s_cluster_name:       K8S_NAME,                    
                     k8s_master_admin_user:  "vagrant",
